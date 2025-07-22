@@ -1,0 +1,81 @@
+<aside class="w-64 bg-gradient-to-b from-darlingoMid to-darlingoDark text-white h-screen flex flex-col shadow-lg fixed left-0 top-0 z-10 transition-all duration-300">
+  <!-- Logo/Brand -->
+  <div class="p-6 flex items-center justify-between border-b border-white/10">
+    <h1 class="text-xl font-bold flex items-center">
+      <span class="bg-white text-darlingoMid w-8 h-8 rounded-full flex items-center justify-center mr-2">D</span>
+      <span>Darlingo</span>
+    </h1>
+  </div>
+
+  <!-- User Profile -->
+  <div class="p-4 border-b border-white/10">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+        <fa-icon [icon]="faUser" class="text-lg"></fa-icon>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ currentUser.name }}</p>
+        <p class="text-xs text-white/60 truncate">{{ currentUser.role }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto py-4 px-2">
+    <ul class="space-y-1">
+      <ng-container *ngFor="let item of menuItems">
+        <li>
+          <ng-container *ngIf="!item.children; else hasChildren">
+            <a [routerLink]="item.route" 
+               [routerLinkActive]="'bg-white/10 text-white'"
+               [routerLinkActiveOptions]="{exact: item.exact || false}"
+               class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-white/10 group">
+              <fa-icon [icon]="item.icon" class="w-5 h-5 mr-3 text-white/70 group-hover:text-white"></fa-icon>
+              <span>{{ item.title }}</span>
+            </a>
+          </ng-container>
+
+          <ng-template #hasChildren>
+            <button (click)="toggleSubMenu(item)"
+                    class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-white/10 group">
+              <div class="flex items-center">
+                <fa-icon [icon]="item.icon" class="w-5 h-5 mr-3 text-white/70 group-hover:text-white"></fa-icon>
+                <span>{{ item.title }}</span>
+              </div>
+              <fa-icon [icon]="item.isExpanded ? faChevronDown : faChevronRight" 
+                      class="w-4 h-4 text-white/50"></fa-icon>
+            </button>
+            
+            <!-- Submenu -->
+            <div *ngIf="item.children" [class.max-h-0]="!item.isExpanded" 
+                 class="overflow-hidden transition-all duration-300 ease-in-out"
+                 [class.max-h-96]="item.isExpanded">
+              <ul class="pl-8 py-1 space-y-1">
+                <li *ngFor="let child of item.children">
+                  <a [routerLink]="child.route"
+                     routerLinkActive="text-white bg-white/10"
+                     class="flex items-center px-3 py-2 text-xs font-medium rounded-md transition-colors hover:bg-white/5">
+                    <fa-icon [icon]="child.icon" class="w-3.5 h-3.5 mr-2"></fa-icon>
+                    {{ child.title }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ng-template>
+        </li>
+      </ng-container>
+    </ul>
+  </nav>
+
+  <!-- Bottom Section -->
+  <div class="p-4 border-t border-white/10">
+    <button (click)="onLogout()" 
+            class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white/80 hover:text-white rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+      <fa-icon [icon]="faSignOut" class="w-4 h-4 mr-2"></fa-icon>
+      Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- Add margin to main content to prevent overlap with fixed sidebar -->
+<div class="ml-64"></div>

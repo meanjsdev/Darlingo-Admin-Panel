@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+  <!-- Header -->
+  <div class="max-w-7xl mx-auto mb-8">
+    <div class="flex items-center mb-4">
+      <button (click)="goBack()" class="mr-3 text-gray-600 hover:text-gray-900 transition-colors">
+        <fa-icon [icon]="faArrowLeft" class="text-xl"></fa-icon>
+      </button>
+      <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">
+        Edit {{ contentType }}
+      </h1>
+    </div>
+    
+    <!-- Add/Edit Form -->
+    <form [formGroup]="contentForm" (ngSubmit)="onSubmit()" class="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-grow">
+          <label for="name" class="sr-only">Enter {{ contentType }} name</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter {{ contentType }} name"
+            [class.border-red-500]="contentForm.get('name')?.invalid && contentForm.get('name')?.touched"
+          >
+          <div *ngIf="contentForm.get('name')?.invalid && contentForm.get('name')?.touched" class="mt-1 text-sm text-red-600">
+            <span *ngIf="contentForm.get('name')?.errors?.['required']">Name is required</span>
+            <span *ngIf="contentForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters</span>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="contentForm.invalid"
+        >
+          <fa-icon [icon]="isEditing ? faEdit : faPlus" class="mr-2"></fa-icon>
+          {{ isEditing ? 'Update' : 'Add' }}
+        </button>
+        <button
+          *ngIf="isEditing"
+          type="button"
+          (click)="resetForm()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Content Table -->
+  <div class="max-w-7xl mx-auto">
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let item of contentItems" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.id }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
+                  (click)="onEdit(item)"
+                  class="mr-2 text-blue-600 hover:text-blue-900"
+                  title="Edit"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button
+                  (click)="onDelete(item)"
+                  class="text-red-600 hover:text-red-900"
+                  title="Delete"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="contentItems.length === 0">
+              <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">
+                No {{ contentType }} items found. Add one above.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
