@@ -20,6 +20,14 @@ export const routes: Routes = [
   },
   {
     path: 'content/:type',
+    loadComponent: () => import('./pages/content-list/content-list.component').then(m => m.ContentListComponent),
+  },
+  {
+    path: 'content/:type/add',
+    loadComponent: () => import('./pages/edit-content/edit-content').then(m => m.EditContentComponent),
+  },
+  {
+    path: 'content/:type/edit/:id',
     loadComponent: () => import('./pages/edit-content/edit-content').then(m => m.EditContentComponent),
   },
   // Placeholder for future modules

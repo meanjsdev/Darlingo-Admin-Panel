@@ -58,10 +58,14 @@ export class SidebarComponent implements OnInit {
       icon: this.faList,
       route: '/content',
       children: [
-        { title: 'Hobbies', icon: this.faList, route: '/content/hobbies' },
-        { title: 'Religions', icon: this.faList, route: '/content/religions' },
-        { title: 'Educations', icon: this.faList, route: '/content/educations' },
-        { title: 'Sexual Orientations', icon: this.faList, route: '/content/sexual-orientations' }
+        { title: 'Sexual Orientation', icon: this.faList, route: '/content/sexual-orientation' },
+        { title: 'Looking For', icon: this.faList, route: '/content/looking-for' },
+        { title: 'Education', icon: this.faList, route: '/content/education' },
+        { title: 'Workout', icon: this.faList, route: '/content/workout' },
+        { title: 'Religion', icon: this.faList, route: '/content/religion' },
+        { title: 'Smoking', icon: this.faList, route: '/content/smoking' },
+        { title: 'Drinking', icon: this.faList, route: '/content/drinking' },
+        { title: 'Interests', icon: this.faList, route: '/content/interests' }
       ],
       isExpanded: false
     },
