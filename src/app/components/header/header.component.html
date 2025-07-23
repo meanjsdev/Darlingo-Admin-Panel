@@ -1,7 +1,32 @@
 <header class="flex items-center justify-between px-6 py-4 bg-darlingoRed shadow-lg">
   <img src="assets/logo.png" alt="Darlingo Logo" class="h-10">
   <div class="text-darlingoLight font-semibold text-xl">Darlingo Admin Panel</div>
-  <div class="flex items-center gap-4">
-    <!-- User/Profile/Actions -->
+  <div class="relative">
+    <button (click)="toggleDropdown()" class="flex items-center text-white focus:outline-none">
+      <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-darlingoRed font-bold text-lg">
+        {{ (userData?.name || 'U').charAt(0).toUpperCase() }}
+      </div>
+      <span class="ml-2 text-white">{{ userData?.name || 'User' }}</span>
+      <svg class="w-4 h-4 ml-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+    
+    <!-- Dropdown menu -->
+    <div *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+      <a (click)="openResetPassword()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+        Reset Password
+      </a>
+      <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+        Sign Out
+      </a>
+    </div>
   </div>
+
+  <!-- Reset Password Modal -->
+  <app-reset-password 
+    *ngIf="showResetPasswordModal"
+    [email]="userData.email" 
+    (close)="onResetPasswordClose()">
+  </app-reset-password>
 </header>
