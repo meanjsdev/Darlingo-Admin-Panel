@@ -25,10 +25,12 @@ export const routes: Routes = [
   {
     path: 'content/:type/add',
     loadComponent: () => import('./pages/edit-content/edit-content').then(m => m.EditContentComponent),
+    data: { isEdit: false }
   },
   {
     path: 'content/:type/edit/:id',
     loadComponent: () => import('./pages/edit-content/edit-content').then(m => m.EditContentComponent),
+    data: { isEdit: true }
   },
   // Placeholder for future modules
   // {

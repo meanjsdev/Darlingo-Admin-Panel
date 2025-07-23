@@ -15,7 +15,11 @@ import {
   faHeart,
   faGlobe,
   faLanguage,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faPlus,
+  faList,
+  faChurch,
+  faWineGlassAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { ContentService, ContentItem } from '../../services/content.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -38,6 +42,8 @@ export class ManageContent implements OnInit {
   // Icons
   faEdit = faEdit;
   faInfoCircle = faInfoCircle;
+  faPlus = faPlus;
+  faList = faList;
   isLoading = true;
   error: string | null = null;
   
@@ -47,9 +53,9 @@ export class ManageContent implements OnInit {
     'looking-for': faSearch,
     'education': faGraduationCap,
     'workout': faDumbbell,
-    'religion': faPlaceOfWorship,
+    'religion': faChurch,
     'smoking': faSmoking,
-    'drinking': faWineGlass,
+    'drinking': faWineGlassAlt,
     'interests': faHeart,
     'nationalities': faGlobe,
     'native-languages': faLanguage,
