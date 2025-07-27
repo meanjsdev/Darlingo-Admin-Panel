@@ -39,6 +39,7 @@ export class SidebarComponent implements OnInit {
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
   faUser = faUserCircle;
+  faSubscription = faList; // Reusing the list icon for subscriptions
 
   // Menu items
   menuItems: MenuItem[] = [
@@ -46,6 +47,12 @@ export class SidebarComponent implements OnInit {
       title: 'Dashboard',
       icon: this.faHome,
       route: '/dashboard',
+      exact: true
+    },
+    {
+      title: 'Subscriptions',
+      icon: this.faSubscription,
+      route: '/subscriptions',
       exact: true
     },
     {

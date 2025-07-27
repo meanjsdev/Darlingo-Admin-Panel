@@ -32,9 +32,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/edit-content/edit-content').then(m => m.EditContentComponent),
     data: { isEdit: true }
   },
+  {
+    path: 'subscriptions',
+    loadComponent: () => import('./pages/subscription-list/subscription-list').then(m => m.default),
+  },
+  {
+    path: 'subscriptions/new',
+    loadComponent: () => import('./pages/subscription-form/subscription-form').then(m => m.SubscriptionForm),
+  },
+  {
+    path: 'subscriptions/edit/:id',
+    loadComponent: () => import('./pages/subscription-form/subscription-form').then(m => m.SubscriptionForm),
+  },
   // Placeholder for future modules
   // {
   //   path: 'settings',
-  //   loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent),
+  //   loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
   // },
 ];
