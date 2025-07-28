@@ -13,6 +13,8 @@ export interface User {
 
 export interface LoginCredentials {
   email: string;
+  loginType: string;
+  role: string;
   password: string;
 }
 
@@ -38,7 +40,7 @@ export class AuthService {
    * Login user with email and password
    */
   login(credentials: LoginCredentials): Observable<User> {
-    return this.api.post<{ user: User; token: string }>('/auth/login', credentials).pipe(
+    return this.api.post<{ user: User; token: string }>('/admin/login', credentials).pipe(
       tap(response => {
         // Store token and user info
         localStorage.setItem(this.tokenKey, response.token);

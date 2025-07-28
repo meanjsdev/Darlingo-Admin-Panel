@@ -1,10 +1,17 @@
-<div class="flex flex-col min-h-screen">
-  <app-header></app-header>
-  <div class="flex flex-1">
-    <app-sidebar></app-sidebar>
-    <main class="flex-1 bg-darlingoLight p-6">
-      <router-outlet></router-outlet>
-    </main>
+<ng-container *ngIf="isLoginRoute; else fullLayout">
+  <div class="h-screen w-full">
+    <router-outlet></router-outlet>
   </div>
-  <app-footer></app-footer>
-</div>
+</ng-container>
+<ng-template #fullLayout>
+  <div class="flex flex-col min-h-screen">
+    <app-header></app-header>
+    <div class="flex flex-1">
+      <app-sidebar></app-sidebar>
+      <main class="flex-1 bg-darlingoLight p-6">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</ng-template>
