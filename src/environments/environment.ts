@@ -1,5 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5000/api', // Update this with your actual API base URL
-  // Add other environment-specific settings here
+  production: true,
+  apiUrl: 'http://18.206.171.255:5000/api', // Update with your production API URL
 };
