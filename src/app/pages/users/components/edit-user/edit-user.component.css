@@ -1,0 +1,21 @@
+/* Tailwind handles layout, spacing, and most colors. Only add custom classes if needed for unique brand colors. */
+
+.text-darlingoRed {
+  color: #e53e3e;
+}
+.bg-darlingoRed {
+  background-color: #e53e3e;
+}
+.text-darlingoMid {
+  color: #3b4252;
+}
+.bg-darlingoMid {
+  background-color: #3b4252;
+}
+.bg-darlingoLight {
+  background-color: #f5f7fa;
+}
+
+/* Example: If you want to override Tailwind for custom brand, do it here. */
+
+/* Remove legacy form styles, all spacing, borders, and radius are now Tailwind. */

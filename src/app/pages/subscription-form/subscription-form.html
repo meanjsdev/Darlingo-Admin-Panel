@@ -1,0 +1,273 @@
+<!-- Modal Wrapper -->
+<div *ngIf="visible" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto" (click)="onBackdropClick($event)">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-in-out">
+    
+    <!-- Header -->
+    <div class="gradient-bg px-6 py-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">
+            {{ isEditing ? 'Edit' : 'Add New' }} Subscription
+          </h2>
+          <p class="text-indigo-100 text-sm">Create a new subscription plan for your service</p>
+        </div>
+        <button 
+          type="button" 
+          (click)="onCancel()"
+          class="text-white hover:text-indigo-200 transition-colors duration-200 p-2 hover:bg-white/10 rounded-full"
+        >
+          <span class="sr-only">Close</span>
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="overflow-y-auto max-h-[calc(90vh-140px)]">
+      <div class="px-6 py-6">
+        <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          
+          <!-- Basic Information Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Basic Information</h3>
+            
+            <!-- Name -->
+            <div class="space-y-2">
+              <label for="n ame" class="block text-sm font-medium text-gray-700">
+                Subscription Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                placeholder="e.g., Premium Plan"
+                [class.border-red-300]="subscriptionForm.get('name')?.invalid && subscriptionForm.get('name')?.touched"
+              >
+              <div *ngIf="subscriptionForm.get('name')?.invalid && subscriptionForm.get('name')?.touched" class="text-sm text-red-600">
+                <span *ngIf="subscriptionForm.get('name')?.errors?.['required']">Name is required</span>
+                <span *ngIf="subscriptionForm.get('name')?.errors?.['minlength']">Name must be at least 3 characters</span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-2">
+              <label for="description" class="block text-sm font-medium text-gray-700">
+                Description <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="description"
+                formControlName="description"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200 resize-none"
+                placeholder="Describe what this subscription includes"
+                [class.border-red-300]="subscriptionForm.get('description')?.invalid && subscriptionForm.get('description')?.touched"
+              ></textarea>
+              <div *ngIf="subscriptionForm.get('description')?.invalid && subscriptionForm.get('description')?.touched" class="text-sm text-red-600">
+                <span *ngIf="subscriptionForm.get('description')?.errors?.['required']">Description is required</span>
+                <span *ngIf="subscriptionForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing & Duration Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Pricing & Duration</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Price -->
+              <div class="space-y-2">
+                <label for="price" class="block text-sm font-medium text-gray-700">
+                  Price <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500 text-sm">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="price"
+                    formControlName="price"
+                    min="0"
+                    step="0.01"
+                    class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                    placeholder="0.00"
+                    [class.border-red-300]="subscriptionForm.get('price')?.invalid && subscriptionForm.get('price')?.touched"
+                  >
+                </div>
+                <div *ngIf="subscriptionForm.get('price')?.invalid && subscriptionForm.get('price')?.touched" class="text-sm text-red-600">
+                  <span *ngIf="subscriptionForm.get('price')?.errors?.['required']">Price is required</span>
+                  <span *ngIf="subscriptionForm.get('price')?.errors?.['min']">Price must be 0 or greater</span>
+                </div>
+              </div>
+
+              <!-- Duration -->
+              <div class="space-y-2">
+                <label for="duration" class="block text-sm font-medium text-gray-700">
+                  Duration (months) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="duration"
+                  formControlName="duration"
+                  min="1"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                  placeholder="1"
+                  [class.border-red-300]="subscriptionForm.get('duration')?.invalid && subscriptionForm.get('duration')?.touched"
+                >
+                <div *ngIf="subscriptionForm.get('duration')?.invalid && subscriptionForm.get('duration')?.touched" class="text-sm text-red-600">
+                  <span *ngIf="subscriptionForm.get('duration')?.errors?.['required']">Duration is required</span>
+                  <span *ngIf="subscriptionForm.get('duration')?.errors?.['min']">Duration must be at least 1 month</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Features & Benefits Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Features & Benefits</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <!-- Features Field -->
+              <div class="space-y-2">
+                <label for="features" class="block text-sm font-medium text-gray-700">Features</label>
+                <div class="relative">
+                  <textarea
+                    id="features"
+                    formControlName="features"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200 resize-none"
+                    placeholder="Enter one feature per line"
+                    (input)="onFeaturesInput($event)"
+                  ></textarea>
+                  <div class="absolute bottom-2 right-2 text-xs text-gray-500 bg-white px-1 rounded">
+                    {{ featuresCount }} features
+                  </div>
+                </div>
+              </div>
+
+              <!-- Perks Field -->
+              <div class="space-y-2">
+                <label for="perks" class="block text-sm font-medium text-gray-700">Perks</label>
+                <div class="relative">
+                  <textarea
+                    id="perks"
+                    formControlName="perks"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200 resize-none"
+                    placeholder="Enter one perk per line"
+                    (input)="onPerksInput($event)"
+                  ></textarea>
+                  <div class="absolute bottom-2 right-2 text-xs text-gray-500 bg-white px-1 rounded">
+                    {{ perksCount }} perks
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Media Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Media</h3>
+            
+            <!-- Image URL -->
+            <div class="space-y-2">
+              <label for="imageUrl" class="block text-sm font-medium text-gray-700">
+                Image URL <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="url"
+                id="imageUrl"
+                formControlName="imageUrl"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
+                placeholder="https://example.com/subscription-image.jpg"
+                [class.border-red-300]="subscriptionForm.get('imageUrl')?.invalid && subscriptionForm.get('imageUrl')?.touched"
+              >
+              <div *ngIf="subscriptionForm.get('imageUrl')?.invalid && subscriptionForm.get('imageUrl')?.touched" class="text-sm text-red-600">
+                <span *ngIf="subscriptionForm.get('imageUrl')?.errors?.['required']">Image URL is required</span>
+                <span *ngIf="subscriptionForm.get('imageUrl')?.errors?.['pattern']">Please enter a valid URL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Settings</h3>
+            <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+              <!-- Popular Toggle -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-start space-x-3">
+                  <input
+                    id="popular"
+                    type="checkbox"
+                    formControlName="popular"
+                    class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  >
+                  <div class="flex-1">
+                    <label for="popular" class="block text-sm font-medium text-gray-800 cursor-pointer">
+                      Mark as popular plan
+                    </label>
+                    <p class="text-xs text-gray-600 mt-1">This plan will be highlighted to customers</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  ⭐ Featured
+                </span>
+              </div>
+
+              <!-- Active Toggle -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-start space-x-3">
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    formControlName="isActive"
+                    class="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  >
+                  <div class="flex-1">
+                    <label for="isActive" class="block text-sm font-medium text-gray-800 cursor-pointer">
+                      Activate subscription immediately
+                    </label>
+                    <p class="text-xs text-gray-600 mt-1">Make this plan available to customers right away</p>
+                  </div>
+                </div>
+                <span [class.bg-green-100]="subscriptionForm.get('isActive')?.value" 
+                      [class.text-green-800]="subscriptionForm.get('isActive')?.value"
+                      [class.bg-red-100]="!subscriptionForm.get('isActive')?.value"
+                      [class.text-red-800]="!subscriptionForm.get('isActive')?.value"
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
+                  {{ subscriptionForm.get('isActive')?.value ? '✅ Active' : '❌ Inactive' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+          <button 
+            type="button" 
+            (click)="onCancel()"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            [disabled]="subscriptionForm.invalid || loading"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+          >
+            <svg *ngIf="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isEditing ? 'Update' : 'Create' }} Subscription
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

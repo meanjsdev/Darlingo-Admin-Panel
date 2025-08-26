@@ -1,0 +1,234 @@
+<div class="users-container">
+  <!-- Header with title and add button -->
+  <div class="header">
+    <h1>Users</h1>
+    <button type="button" class="add-user-btn" (click)="addUser()">
+      <i class="fas fa-plus"></i> Add User
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (keyup.enter)="applyFilters()" 
+        placeholder="Search users..."
+        class="search-input"
+      >
+    </div>
+    
+    <div class="filter-dropdown">
+      <div class="dropdown" [class.active]="statusFilter() !== null">
+        <div class="dropdown-toggle" (click)="toggleStatusDropdown($event)">
+          <span class="dropdown-label">{{ statusFilter()?.label || 'All Status' }}</span>
+          <i class="fas fa-chevron-down" [class.rotate-180]="isStatusDropdownOpen()"></i>
+        </div>
+        <div class="dropdown-menu" [class.show]="isStatusDropdownOpen()">
+          <div 
+            *ngFor="let status of statusOptions()" 
+            class="dropdown-item" 
+            (click)="setStatusFilter(status); applyFilters()"
+          >
+            {{ status.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-dropdown">
+      <div class="dropdown" [class.active]="roleFilter() !== null">
+        <div class="dropdown-toggle" (click)="toggleRoleDropdown($event)">
+          <span class="dropdown-label">{{ roleFilter()?.label || 'All Roles' }}</span>
+          <i class="fas fa-chevron-down" [class.rotate-180]="isRoleDropdownOpen()"></i>
+        </div>
+        <div class="dropdown-menu" [class.show]="isRoleDropdownOpen()">
+          <div 
+            *ngFor="let role of roleOptions()" 
+            class="dropdown-item" 
+            (click)="setRoleFilter(role); applyFilters()"
+          >
+            {{ role.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-icon" (click)="resetFilters()" title="Reset Filters">
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-responsive">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th style="width: 250px;">Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Created At</th>
+          <th>Status</th>
+          <th style="width: 180px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loading State -->
+        <tr *ngIf="loading()">
+          <td colspan="7" class="loading-row">
+            <div class="loading-spinner"></div>
+            <span>Loading users...</span>
+          </td>
+        </tr>
+        
+        <!-- Empty State -->
+        <tr *ngIf="!loading() && users().length === 0">
+          <td colspan="7" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No users found</p>
+          </td>
+        </tr>
+        
+        <!-- Users List -->
+        <tr *ngFor="let user of users()" class="user-row">
+          <td>
+            <div class="user-info">
+              <div class="user-avatar">
+                <img [src]="user.profilePicture || 'assets/images/avatar-default.svg'" alt="User Avatar" onerror="this.src='assets/images/avatar-default.svg'">
+              </div>
+              <div class="user-details">
+                <div class="user-name">{{ user.name || 'N/A' }}</div>
+                <div class="user-email">{{ user.email || '' }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ user.email || 'N/A' }}</td>
+          <td>{{ user.phone || 'N/A' }}</td>
+          <td>{{ user.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <div class="status-toggle-container">
+              <span class="status-badge" [class.active]="user.accountStatus === 'active'" 
+                    [class.inactive]="user.accountStatus !== 'active'">
+                {{ user.accountStatus === 'active' ? 'Active' : 'Inactive' }}
+              </span>
+              <label class="switch">
+                <input type="checkbox" 
+                       [checked]="user.accountStatus === 'active'" 
+                       (change)="toggleUserStatus(user, $event)">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </td>
+          <td class="actions">
+            <div class="action-buttons">
+              <button type="button" class="btn-icon" (click)="viewUser(user)" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button type="button" class="btn-icon" (click)="editUser(user)" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button type="button" class="btn-icon danger" (click)="confirmDelete(user)" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <div class="pagination-info">
+      Showing {{ (currentPage() - 1) * itemsPerPage + 1 }} to 
+      {{ currentPage() * itemsPerPage > totalRecords() ? totalRecords() : currentPage() * itemsPerPage }}
+      of {{ totalRecords() }} entries
+    </div>
+    
+    <div class="pagination-controls">
+      <div class="items-per-page">
+        <span>Items per page:</span>
+        <select #itemsPerPageSelect (change)="changeItemsPerPage(+itemsPerPageSelect.value)">
+          <option *ngFor="let opt of itemsPerPageOptions" [value]="opt" [selected]="itemsPerPage === opt">
+            {{ opt }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="pagination-buttons">
+        <button type="button" 
+                class="pagination-button" 
+                [disabled]="currentPage() === 1"
+                (click)="changePage(1)">
+          &laquo;
+        </button>
+        <button type="button" 
+                class="pagination-button" 
+                [disabled]="currentPage() === 1"
+                (click)="changePage(currentPage() - 1)">
+          &lsaquo;
+        </button>
+        
+        <span class="pagination-pages">
+          <span *ngFor="let page of getPaginationRange()"
+                class="page-number"
+                [class.active]="page === currentPage()"
+                (click)="changePage(page)">
+            {{ page }}
+          </span>
+        </span>
+        
+        <button type="button" 
+                class="pagination-button" 
+                [disabled]="currentPage() === totalPages()"
+                (click)="changePage(currentPage() + 1)">
+          &rsaquo;
+        </button>
+        <button type="button" 
+                class="pagination-button" 
+                [disabled]="currentPage() === totalPages()"
+                (click)="changePage(totalPages())">
+          &raquo;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirm()" (click)="onDeleteConfirm(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button type="button" class="close-btn" (click)="onDeleteConfirm(false)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ userToDelete()?.name || 'this user' }}</strong>?</p>
+        <p class="text-muted">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onDeleteConfirm(false)" [disabled]="deleting()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="onDeleteConfirm(true)" [disabled]="deleting()">
+          <span *ngIf="!deleting()">Delete</span>
+          <span *ngIf="deleting()">Deleting...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div *ngIf="toastMessage()" class="toast" [class.success]="toastMessage()?.type === 'success'" [class.error]="toastMessage()?.type === 'error'">
+    <div class="toast-icon">
+      <i class="fas" [class.fa-check-circle]="toastMessage()?.type === 'success'" [class.fa-exclamation-circle]="toastMessage()?.type === 'error'"></i>
+    </div>
+    <div class="toast-message">
+      {{ toastMessage()?.text }}
+    </div>
+    <button type="button" class="toast-close" (click)="clearToast()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>

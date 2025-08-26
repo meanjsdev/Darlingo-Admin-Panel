@@ -1,0 +1,88 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+  <!-- Header -->
+  <div class="max-w-3xl mx-auto">
+    <div class="flex items-center mb-6">
+      <button (click)="goBack()" class="mr-3 text-gray-600 hover:text-gray-900 transition-colors">
+        <fa-icon [icon]="faArrowLeft" class="text-xl"></fa-icon>
+      </button>
+      <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">
+        {{ isEditing ? 'Edit' : 'Add New' }} {{ displayName }}
+      </h1>
+    </div>
+    
+    <!-- Error Alert -->
+    <div *ngIf="error" class="mb-6">
+      <div class="bg-red-50 border-l-4 border-red-400 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <fa-icon [icon]="faExclamationTriangle" class="h-5 w-5 text-red-400"></fa-icon>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700">
+              {{ error }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+      <fa-icon [icon]="faSpinner" class="animate-spin text-blue-500 text-2xl mb-2"></fa-icon>
+      <p class="text-gray-500">Loading {{ displayName.toLowerCase() }}...</p>
+    </div>
+    
+    <!-- Form -->
+    <form *ngIf="!isLoading" [formGroup]="contentForm" (ngSubmit)="onSubmit()" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div class="space-y-6">
+        <!-- Name Field -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter name"
+            [class.border-red-500]="contentForm.get('name')?.invalid && contentForm.get('name')?.touched"
+          >
+          <div *ngIf="contentForm.get('name')?.invalid && contentForm.get('name')?.touched" class="mt-1 text-sm text-red-600">
+            <span *ngIf="contentForm.get('name')?.errors?.['required']">Name is required</span>
+            <span *ngIf="contentForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters</span>
+          </div>
+        </div>
+        
+        
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <button
+            type="button"
+            (click)="goBack()"
+            class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Cancel
+          </button>
+          <button
+            *ngIf="isEditing"
+            type="button"
+            (click)="onDelete()"
+            class="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center"
+            [disabled]="isSubmitting"
+          >
+            <fa-icon [icon]="faTrash" class="mr-2"></fa-icon>
+            Delete
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            [disabled]="contentForm.invalid || isSubmitting"
+          >
+            <fa-icon *ngIf="isSubmitting" [icon]="faSpinner" class="animate-spin mr-2"></fa-icon>
+            <fa-icon *ngIf="!isSubmitting" [icon]="isEditing ? faSave : faPlus" class="mr-2"></fa-icon>
+            {{ isEditing ? 'Save Changes' : 'Create ' + displayName }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

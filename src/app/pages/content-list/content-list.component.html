@@ -1,0 +1,103 @@
+<div class="min-h-[calc(100vh-4rem)] bg-slate-50 p-6">
+  <!-- Header -->
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-semibold text-slate-800 mb-1">{{ displayName }}</h1>
+      <p class="text-sm text-slate-500">Manage {{ displayName.toLowerCase() }} items</p>
+    </div>
+    <button 
+      [routerLink]="['/content', contentType, 'add']"
+      class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm font-medium"
+    >
+      <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+      <span>Add New</span>
+    </button>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="mb-6">
+    <div class="bg-red-50 border-l-4 border-red-400 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <fa-icon [icon]="faExclamationTriangle" class="h-5 w-5 text-red-400"></fa-icon>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700">
+            {{ error }}. <button (click)="loadItems()" class="font-medium text-red-600 hover:text-red-500">Try again</button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-8 text-center">
+      <fa-icon [icon]="faSpinner" class="animate-spin text-sky-500 text-2xl mb-2"></fa-icon>
+      <p class="text-slate-500">Loading {{ displayName.toLowerCase() }} items...</p>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && items.length === 0" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-8 text-center">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-slate-100 mb-4">
+        <fa-icon [icon]="faExclamationTriangle" class="text-slate-400"></fa-icon>
+      </div>
+      <h3 class="text-lg font-medium text-slate-900 mb-1">No {{ displayName.toLowerCase() }} items found</h3>
+      <p class="text-slate-500 mb-4">Get started by creating a new item.</p>
+      <button 
+        [routerLink]="['/content', contentType, 'add']"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm font-medium"
+      >
+        <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+        <span>Add {{ displayName }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Items Table -->
+  <div *ngIf="!isLoading && items.length > 0" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-slate-50">
+          <tr>
+            <th scope="col" class="px-6 py-4 text-left text-sm font-medium text-slate-600 uppercase tracking-wider">Name</th>
+            <th scope="col" class="px-6 py-4 text-left text-sm font-medium text-slate-600 uppercase tracking-wider">Created</th>
+            <th scope="col" class="px-6 py-4 text-right">
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let item of items" class="hover:bg-slate-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="text-sm font-medium text-slate-900">{{ item.name }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-slate-600">{{ item.createdAt | date:'mediumDate' }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center space-x-2">
+                <button 
+                  [routerLink]="['/content', contentType, 'edit', item.id]"
+                  class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                  title="Edit"
+                >
+                  <fa-icon [icon]="faEdit" class="text-sm"></fa-icon>
+                </button>
+                <button 
+                  (click)="onDelete(item)" 
+                  class="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  title="Delete"
+                >
+                  <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
