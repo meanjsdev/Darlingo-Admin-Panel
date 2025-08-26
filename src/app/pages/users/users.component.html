@@ -34,10 +34,6 @@
           >
             {{ status.label }}
           </div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item" (click)="statusFilter.set(statusOptions()[0]); applyFilters()">
-            Clear Filter
-          </div>
         </div>
       </div>
     </div>
@@ -55,10 +51,6 @@
             (click)="setRoleFilter(role); applyFilters()"
           >
             {{ role.label }}
-          </div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item" (click)="roleFilter.set(roleOptions()[0]); applyFilters()">
-            Clear Filter
           </div>
         </div>
       </div>

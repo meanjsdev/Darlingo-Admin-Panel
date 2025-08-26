@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SubscriptionService, ApiResponse } from '../../services/subscription';
+import { SubscriptionService, ApiResponse } from '../../services/subscription.service';
 import { DialogService } from '../../services/dialog.service';
 import { Subscription as SubscriptionModel } from '../../models/subscription.model';
 
@@ -13,8 +13,12 @@ import { Subscription as SubscriptionModel } from '../../models/subscription.mod
   templateUrl: './subscription-form.html',
   styleUrls: ['./subscription-form.css']
 })
-export class SubscriptionForm implements OnInit {
-  subscription: SubscriptionModel | null = null;
+export class SubscriptionForm implements OnInit, OnChanges {
+  @Input() subscription: SubscriptionModel | null = null;
+  @Input() visible: boolean = false;
+  @Output() close = new EventEmitter<void>();
+  @Output() save = new EventEmitter<Omit<SubscriptionModel, '_id' | 'id' | 'createdAt' | 'updatedAt'>>();
+  
   subscriptionForm: FormGroup;
   isEditing = false;
   loading = false;
@@ -42,12 +46,26 @@ export class SubscriptionForm implements OnInit {
     });
   }
 
-  ngOnInit() {
-    const subscriptionId = this.route.snapshot.paramMap.get('id');
-    
-    if (subscriptionId) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['subscription'] && this.subscription) {
       this.isEditing = true;
-      this.loadSubscription(subscriptionId);
+      this.loadSubscriptionData();
+    }
+  }
+
+  ngOnInit() {
+    // If no subscription is provided via input, check for ID in route
+    if (!this.subscription) {
+      const subscriptionId = this.route.snapshot.paramMap.get('id');
+      if (subscriptionId) {
+        this.isEditing = true;
+        this.loadSubscription(subscriptionId);
+      } else {
+        // Initialize a new subscription form
+        this.initializeForm();
+      }
+    } else {
+      this.loadSubscriptionData();
     }
 
     // Watch for changes to update the counts
@@ -62,8 +80,13 @@ export class SubscriptionForm implements OnInit {
 
   onFeaturesInput(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
+    // Update the textarea height
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+    
+    // Update the form control value
     const features = textarea.value.split('\n').filter(line => line.trim() !== '');
-    this.subscriptionForm.patchValue({ features: features.join('\n') });
+    this.subscriptionForm.patchValue({ features: textarea.value }, { emitEvent: false });
     this.featuresCount = features.length;
   }
 
@@ -73,8 +96,14 @@ export class SubscriptionForm implements OnInit {
 
   onPerksInput(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
+    // Update the textarea height
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
+    
+    // Update the form control value
+    const perks = textarea.value.split('\n').filter(line => line.trim() !== '');
+    this.subscriptionForm.patchValue({ perks: textarea.value }, { emitEvent: false });
+    this.perksCount = perks.length;
   }
 
   private loadSubscription(id: string) {
@@ -105,6 +134,40 @@ export class SubscriptionForm implements OnInit {
     });
   }
 
+  private loadSubscriptionData() {
+    if (this.subscription) {
+      this.subscriptionForm.patchValue({
+        name: this.subscription.name,
+        description: this.subscription.description,
+        price: this.subscription.price,
+        duration: this.subscription.duration,
+        features: Array.isArray(this.subscription.features) ? this.subscription.features.join('\n') : '',
+        perks: Array.isArray(this.subscription.perks) ? this.subscription.perks.join('\n') : '',
+        imageUrl: this.subscription.imageUrl || '',
+        popular: this.subscription.popular || false,
+        isActive: this.subscription.isActive !== undefined ? this.subscription.isActive : true
+      });
+      
+      // Update counts
+      this.featuresCount = this.countNonEmptyLines(this.subscriptionForm.get('features')?.value || '');
+      this.perksCount = this.countNonEmptyLines(this.subscriptionForm.get('perks')?.value || '');
+    }
+  }
+
+  private initializeForm() {
+    this.subscriptionForm.patchValue({
+      name: '',
+      description: '',
+      price: 0,
+      duration: 1,
+      features: '',
+      perks: '',
+      imageUrl: '',
+      popular: false,
+      isActive: true
+    });
+  }
+
   onSubmit() {
     if (this.subscriptionForm.valid) {
       this.loading = true;
@@ -121,25 +184,7 @@ export class SubscriptionForm implements OnInit {
         isActive: formValue.isActive !== undefined ? formValue.isActive : true
       };
 
-      const subscription$ = this.isEditing && this.subscription?._id
-        ? this.subscriptionService.updateSubscription(this.subscription._id, subscriptionData)
-        : this.subscriptionService.createSubscription(subscriptionData);
-
-      subscription$.subscribe({
-        next: (response: ApiResponse<SubscriptionModel>) => {
-          if (response.success) {
-            this.router.navigate(['/subscriptions']);
-          } else {
-            this.error = 'Failed to save subscription';
-            this.loading = false;
-          }
-        },
-        error: (error: any) => {
-          console.error('Error saving subscription:', error);
-          this.error = 'An error occurred while saving the subscription';
-          this.loading = false;
-        }
-      });
+      this.save.emit(subscriptionData);
     } else {
       // Mark all fields as touched to show validation messages
       Object.values(this.subscriptionForm.controls).forEach(control => {
@@ -149,6 +194,13 @@ export class SubscriptionForm implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/subscriptions']);
+    this.close.emit();
+  }
+
+  // Close the modal when clicking on the backdrop
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.onCancel();
+    }
   }
 }

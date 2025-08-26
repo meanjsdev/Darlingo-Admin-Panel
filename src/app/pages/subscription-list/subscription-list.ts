@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SubscriptionService, ApiResponse } from '../../services/subscription';
+import { SubscriptionService, ApiResponse } from '../../services/subscription.service';
 import { DialogService } from '../../services/dialog.service';
 import { Subscription as SubscriptionModel } from '../../models/subscription.model';
-import { SubscriptionFormComponent } from '../../components/subscription-form/subscription-form.component';
+import { SubscriptionForm } from '../subscription-form/subscription-form';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
   imports: [
     CommonModule, 
     RouterModule, 
-    SubscriptionFormComponent,
+    SubscriptionForm,
     // DialogComponent
   ],
   templateUrl: './subscription-list.html',

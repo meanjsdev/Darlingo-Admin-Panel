@@ -75,11 +75,6 @@ export class SidebarComponent implements OnInit {
         { title: 'Interests', icon: this.faList, route: '/content/interests' }
       ],
       isExpanded: false
-    },
-    {
-      title: 'Settings',
-      icon: this.faCog,
-      route: '/settings'
     }
   ];
 
