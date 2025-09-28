@@ -78,13 +78,13 @@ export default class SubscriptionList implements OnInit {
   }
 
   onDelete(subscription: SubscriptionModel) {
-    this.dialogService.showDialog({
-      title: 'Delete Subscription',
-      message: `Are you sure you want to delete "${subscription.name}"?`,
-      confirmText: 'Delete',
-      cancelText: 'Cancel'
-    }).subscribe(confirmed => {
-      if (confirmed) {
+    // this.dialogService.showDialog({
+    //   title: 'Delete Subscription',
+    //   message: `Are you sure you want to delete "${subscription.name}"?`,
+    //   confirmText: 'Delete',
+    //   cancelText: 'Cancel'
+    // }).subscribe(confirmed => {
+    //   if (confirmed) {
         this.subscriptionService.deleteSubscription(subscription._id || '').subscribe({
           next: (response) => {
             if (response.success) {
@@ -97,8 +97,8 @@ export default class SubscriptionList implements OnInit {
             console.error('Error deleting subscription:', error);
           }
         });
-      }
-    });
+      // }
+    // });
   }
 
   onToggleStatus(subscription: SubscriptionModel) {
@@ -125,6 +125,7 @@ export default class SubscriptionList implements OnInit {
     // Ensure required fields have default values
     const subscription: Omit<SubscriptionModel, '_id' | 'id' | 'createdAt' | 'updatedAt'> = {
       name: subscriptionData.name,
+      storeId: subscriptionData.storeId,
       description: subscriptionData.description || '',
       price: subscriptionData.price || 0,
       duration: subscriptionData.duration || 1,
