@@ -1,6 +1,7 @@
 export interface Subscription {
   _id: string;
   name: string;
+  storeId: string;
   description: string;
   price: number;
   duration: number;

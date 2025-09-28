@@ -25,6 +25,21 @@ import { Subscription as SubscriptionModel } from '../../models/subscription.mod
       </div>
 
       <div>
+        <label for="storeId" class="block text-sm font-medium text-gray-700">Store ID *</label>
+        <input
+          type="text"
+          id="storeId"
+          formControlName="storeId"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          [class.border-red-300]="subscriptionForm.get('storeId')?.invalid && subscriptionForm.get('storeId')?.touched"
+          required
+        >
+        <div *ngIf="subscriptionForm.get('storeId')?.invalid && subscriptionForm.get('storeId')?.touched" class="mt-1 text-sm text-red-600">
+          Store ID is required
+        </div>
+      </div>
+
+      <div>
         <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
         <textarea
           id="description"
@@ -161,6 +176,7 @@ export class SubscriptionFormComponent {
   constructor(private fb: FormBuilder) {
     this.subscriptionForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
+      storeId: ['', [Validators.required]],
       description: [''],
       price: [0, [Validators.required, Validators.min(0)]],
       duration: [1, [Validators.required, Validators.min(1)]],
@@ -188,6 +204,7 @@ export class SubscriptionFormComponent {
       const formValue = this.subscriptionForm.value;
       const subscriptionData: Omit<SubscriptionModel, '_id' | 'id' | 'createdAt' | 'updatedAt'> = {
         name: formValue.name,
+        storeId: formValue.storeId,
         description: formValue.description || '',
         price: Number(formValue.price) || 0,
         duration: Number(formValue.duration) || 1,

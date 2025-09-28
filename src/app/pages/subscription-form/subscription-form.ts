@@ -35,12 +35,13 @@ export class SubscriptionForm implements OnInit, OnChanges {
   ) {
     this.subscriptionForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
+      storeId: ['', [Validators.required]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       price: [0, [Validators.required, Validators.min(0)]],
       duration: [1, [Validators.required, Validators.min(1)]],
       features: [''],
       perks: [''],
-      imageUrl: ['', Validators.required],
+      imageUrl: [''],
       popular: [false],
       isActive: [true]
     });
@@ -114,6 +115,7 @@ export class SubscriptionForm implements OnInit, OnChanges {
           this.subscription = response.data;
           this.subscriptionForm.patchValue({
             name: this.subscription.name,
+            storeId: this.subscription.storeId || '',
             description: this.subscription.description,
             price: this.subscription.price,
             duration: this.subscription.duration,
@@ -138,6 +140,7 @@ export class SubscriptionForm implements OnInit, OnChanges {
     if (this.subscription) {
       this.subscriptionForm.patchValue({
         name: this.subscription.name,
+        storeId: this.subscription.storeId || '',
         description: this.subscription.description,
         price: this.subscription.price,
         duration: this.subscription.duration,
@@ -174,6 +177,7 @@ export class SubscriptionForm implements OnInit, OnChanges {
       const formValue = this.subscriptionForm.value;
       const subscriptionData = {
         name: formValue.name,
+        storeId: formValue.storeId,
         description: formValue.description,
         price: formValue.price,
         duration: formValue.duration,
