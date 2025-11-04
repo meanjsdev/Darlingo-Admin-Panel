@@ -1,0 +1,234 @@
+<div class="min-h-screen bg-slate-50 p-6">
+  <!-- Header -->
+  <div class="max-w-4xl mx-auto mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <button (click)="goBack()" class="mr-4 p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+          <fa-icon [icon]="faArrowLeft" class="text-xl"></fa-icon>
+        </button>
+        <h1 class="text-2xl md:text-3xl font-semibold text-slate-800">User Details</h1>
+      </div>
+      <!-- <button 
+        *ngIf="user() && !loading()"
+        (click)="editUser()" 
+        class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm font-medium"
+      >
+        <fa-icon [icon]="faEdit" class="text-sm"></fa-icon>
+        <span>Edit User</span>
+      </button> -->
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto mb-4"></div>
+      <p class="text-slate-500">Loading user details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error() && !loading()" class="max-w-4xl mx-auto">
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700">{{ error() }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details -->
+  <div *ngIf="user() && !loading() && !error()" class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- Profile Header -->
+      <div class="bg-gradient-to-r from-sky-500 to-sky-600 px-6 py-8">
+        <div class="flex items-center space-x-6">
+          <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+            <img 
+              *ngIf="getUserProfilePic()" 
+              [src]="getUserProfilePic()" 
+              [alt]="user()?.name" 
+              class="w-20 h-20 rounded-full object-cover"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+            >
+            <!-- <fa-icon [icon]="faUser" class="text-3xl text-white"></fa-icon> -->
+          </div>
+          <div class="text-white">
+            <h2 class="text-2xl font-bold">{{ user()?.name || 'N/A' }}</h2>
+            <!-- <p class="text-sky-100">{{ user()?.userName || 'N/A' }}</p> -->
+            <div class="flex items-center mt-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    [class.bg-green-100]="user()?.accountStatus === 'active'"
+                    [class.text-green-800]="user()?.accountStatus === 'active'"
+                    [class.bg-red-100]="user()?.accountStatus !== 'active'"
+                    [class.text-red-800]="user()?.accountStatus !== 'active'">
+                <fa-icon [icon]="user()?.accountStatus === 'active' ? faToggleOn : faToggleOff" class="mr-1"></fa-icon>
+                {{ user()?.accountStatus === 'active' ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Information -->
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Basic Information -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Basic Information</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <p class="text-sm text-slate-500">Full Name</p>
+                <p class="font-medium text-slate-900">{{ user()?.name || 'N/A' }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Email</p>
+                <p class="font-medium text-slate-900">{{ user()?.email || 'N/A' }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Phone</p>
+                <p class="font-medium text-slate-900">{{ user()?.phone || 'N/A' }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Age</p>
+                <p class="font-medium text-slate-900">{{ getUserAge() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Height</p>
+                <p class="font-medium text-slate-900">{{ getUserHeight() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Address</p>
+                <p class="font-medium text-slate-900 text-sm">{{ getUserAddress() }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personal Information -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Personal Information</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <p class="text-sm text-slate-500">Nationality</p>
+                <p class="font-medium text-slate-900">{{ getUserNationality() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Native Language</p>
+                <p class="font-medium text-slate-900">{{ getUserNativeLanguage() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Education</p>
+                <p class="font-medium text-slate-900">{{ getUserEducation() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Religion</p>
+                <p class="font-medium text-slate-900">{{ getUserReligion() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Sexual Orientation</p>
+                <p class="font-medium text-slate-900">{{ getUserSexualOrientation() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Looking For</p>
+                <p class="font-medium text-slate-900">{{ getUserLookingFor() }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lifestyle Information -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Lifestyle</h3>
+            
+            <div class="space-y-3">
+              <div>
+                <p class="text-sm text-slate-500">Workout</p>
+                <p class="font-medium text-slate-900">{{ getUserWorkout() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Smoking</p>
+                <p class="font-medium text-slate-900">{{ getUserSmoking() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Drinking</p>
+                <p class="font-medium text-slate-900">{{ getUserDrinking() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Interests</p>
+                <p class="font-medium text-slate-900">{{ getUserInterests() }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-slate-500">Created At</p>
+                <p class="font-medium text-slate-900">{{ user()?.createdAt | date:'medium' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- About Me Section -->
+        <div class="mt-6 pt-6 border-t border-slate-200">
+          <h3 class="text-lg font-semibold text-slate-800 mb-3">About Me</h3>
+          <div class="bg-slate-50 rounded-lg p-4">
+            <p class="text-slate-700">{{ getUserAboutMe() }}</p>
+          </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div *ngIf="hasGalleryContent()" class="mt-6 pt-6 border-t border-slate-200">
+          <h3 class="text-lg font-semibold text-slate-800 mb-4">Gallery</h3>
+          
+          <!-- Images -->
+          <div *ngIf="getUserGalleryImages().length > 0" class="mb-6">
+            <h4 class="text-md font-medium text-slate-700 mb-3">Images ({{ getUserGalleryImages().length }})</h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div *ngFor="let image of getUserGalleryImages()" class="relative group">
+                <img 
+                  [src]="image" 
+                  alt="Gallery image"
+                  class="w-full h-32 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                  (click)="openImageModal(image)"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Videos -->
+          <div *ngIf="getUserGalleryVideos().length > 0">
+            <h4 class="text-md font-medium text-slate-700 mb-3">Videos ({{ getUserGalleryVideos().length }})</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div *ngFor="let video of getUserGalleryVideos()" class="relative">
+                <video 
+                  [src]="video" 
+                  controls
+                  class="w-full h-48 object-cover rounded-lg shadow-sm"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div *ngIf="selectedImage" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" (click)="closeImageModal()">
+    <div class="relative max-w-4xl max-h-full p-4">
+      <img [src]="selectedImage" alt="Gallery image" class="max-w-full max-h-full object-contain rounded-lg">
+      <button 
+        (click)="closeImageModal()" 
+        class="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-75"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+</div>
