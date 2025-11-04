@@ -1,0 +1,170 @@
+<div class="main-container">
+  <div class="content-area">
+    <!-- Header -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-semibold text-slate-800 mb-1">{{ displayName }}</h1>
+        <p class="text-sm text-slate-500">Manage {{ displayName.toLowerCase() }} items</p>
+      </div>
+      <button 
+        [routerLink]="['/countries-languages', contentType, 'add']"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm font-medium w-full sm:w-auto"
+      >
+        <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+        <span>Add New</span>
+      </button>
+    </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="mb-6">
+    <div class="bg-red-50 border-l-4 border-red-400 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <fa-icon [icon]="faExclamationTriangle" class="h-5 w-5 text-red-400"></fa-icon>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700">
+            {{ error }}. <button (click)="loadItems()" class="font-medium text-red-600 hover:text-red-500">Try again</button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-8 text-center">
+      <fa-icon [icon]="faSpinner" class="animate-spin text-sky-500 text-2xl mb-2"></fa-icon>
+      <p class="text-slate-500">Loading {{ displayName.toLowerCase() }} items...</p>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && allItems.length === 0" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-8 text-center">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-slate-100 mb-4">
+        <fa-icon [icon]="faExclamationTriangle" class="text-slate-400"></fa-icon>
+      </div>
+      <h3 class="text-lg font-medium text-slate-900 mb-1">No {{ displayName.toLowerCase() }} items found</h3>
+      <p class="text-slate-500 mb-4">Get started by creating a new item.</p>
+      <button 
+        [routerLink]="['/countries-languages', contentType, 'add']"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm font-medium"
+      >
+        <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
+        <span>Add {{ displayName }}</span>
+      </button>
+    </div>
+  </div>
+
+    <!-- Items Table/Cards -->
+    <div *ngIf="!isLoading && allItems.length > 0" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- Desktop Table -->
+      <div class="hidden md:block overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-slate-50">
+            <tr>
+              <th scope="col" class="px-6 py-4 text-left text-sm font-medium text-slate-600 uppercase tracking-wider">Name</th>
+              <th scope="col" class="px-6 py-4 text-left text-sm font-medium text-slate-600 uppercase tracking-wider">Created</th>
+              <th scope="col" class="px-6 py-4 text-right">
+                <span class="sr-only">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr *ngFor="let item of items" class="hover:bg-slate-50 transition-colors">
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-slate-900">{{ item.name }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-slate-600">{{ item.createdAt | date:'mediumDate' }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center justify-end space-x-2">
+                  <button 
+                    [routerLink]="['/countries-languages', contentType, 'edit', item.id]"
+                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    title="Edit"
+                  >
+                    <fa-icon [icon]="faEdit" class="text-sm"></fa-icon>
+                  </button>
+                  <button 
+                    (click)="onDelete(item)" 
+                    class="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                    title="Delete"
+                  >
+                    <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Mobile Cards -->
+      <div class="md:hidden divide-y divide-slate-100">
+        <div *ngFor="let item of items" class="p-4 hover:bg-slate-50 transition-colors">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</h3>
+              <p class="text-xs text-slate-500 mt-1">{{ item.createdAt | date:'mediumDate' }}</p>
+            </div>
+            <div class="flex items-center space-x-2 ml-4">
+              <button 
+                [routerLink]="['/countries-languages', contentType, 'edit', item.id]"
+                class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                title="Edit"
+              >
+                <fa-icon [icon]="faEdit" class="text-sm"></fa-icon>
+              </button>
+              <button 
+                (click)="onDelete(item)" 
+                class="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                title="Delete"
+              >
+                <fa-icon [icon]="faTrash" class="text-sm"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && allItems.length > 0 && totalPages > 1" class="mt-6 mb-8 bg-white rounded-xl shadow-sm border border-slate-200 px-4 sm:px-6 py-4 pagination-container">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="text-sm text-slate-600 text-center sm:text-left">
+        Showing {{ paginationInfo }} items
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <button 
+          (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1"
+          class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <fa-icon [icon]="faChevronLeft" class="text-sm"></fa-icon>
+        </button>
+        
+        <div class="flex space-x-1 max-w-xs overflow-x-auto">
+          <button 
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            (click)="goToPage(i + 1)"
+            [class]="'px-3 py-2 text-sm rounded-lg flex-shrink-0 ' + (currentPage === i + 1 ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-50')"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+        
+        <button 
+          (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+          class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <fa-icon [icon]="faChevronRight" class="text-sm"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

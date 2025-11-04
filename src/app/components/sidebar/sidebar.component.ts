@@ -10,7 +10,8 @@ import {
   faSignOutAlt, 
   faChevronDown, 
   faChevronRight,
-  faUserCircle
+  faUserCircle,
+  faGlobe
 } from '@fortawesome/free-solid-svg-icons';
 
 interface MenuItem {
@@ -40,6 +41,7 @@ export class SidebarComponent implements OnInit {
   faChevronRight = faChevronRight;
   faUser = faUserCircle;
   faSubscription = faList; // Reusing the list icon for subscriptions
+  faGlobe = faGlobe;
 
   // Menu items
   menuItems: MenuItem[] = [
@@ -73,6 +75,16 @@ export class SidebarComponent implements OnInit {
         { title: 'Smoking', icon: this.faList, route: '/content/smoking' },
         { title: 'Drinking', icon: this.faList, route: '/content/drinking' },
         { title: 'Interests', icon: this.faList, route: '/content/interests' }
+      ],
+      isExpanded: false
+    },
+    {
+      title: 'Countries & Languages',
+      icon: this.faGlobe,
+      route: '/countries-languages',
+      children: [
+        { title: 'Countries', icon: this.faGlobe, route: '/countries-languages/countries' },
+        { title: 'Languages', icon: this.faList, route: '/countries-languages/languages' }
       ],
       isExpanded: false
     }

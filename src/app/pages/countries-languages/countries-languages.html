@@ -2,8 +2,8 @@
   <!-- Header -->
   <div class="mb-8 max-w-7xl mx-auto">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-2xl md:text-3xl font-semibold text-slate-800 mb-1">Manage Content</h1>
-      <p class="text-sm text-slate-500">View and manage all content types</p>
+      <h1 class="text-2xl md:text-3xl font-semibold text-slate-800 mb-1">Countries & Languages</h1>
+      <p class="text-sm text-slate-500">Manage countries and languages data</p>
     </div>
   </div>
 
@@ -28,7 +28,7 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="max-w-7xl mx-auto">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div *ngFor="let _ of [].constructor(8)" class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden animate-pulse">
+      <div *ngFor="let _ of [].constructor(2)" class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden animate-pulse">
         <div class="p-6 pb-4 border-b border-slate-100 flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-slate-200"></div>
           <div class="h-4 bg-slate-200 rounded w-3/4"></div>
@@ -47,7 +47,7 @@
 
   <!-- Content Grid -->
   <div *ngIf="!isLoading" class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <!-- Card -->
       <div *ngFor="let card of contentCards" 
            class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
@@ -70,12 +70,12 @@
         
         <!-- Card Actions -->
         <div class="p-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-          <button [routerLink]="['/content', card.route, 'new']" 
+          <button [routerLink]="['/countries-languages', card.route, 'new']" 
                   class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-green-100 bg-green-50 text-green-600 hover:bg-green-50 hover:border-green-200 transition-colors text-sm font-medium">
             <fa-icon [icon]="faPlus" class="text-sm"></fa-icon>
             <span>Add New</span>
           </button>
-          <button [routerLink]="['/content', card.route]" 
+          <button [routerLink]="['/countries-languages', card.route]" 
                   class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-sky-100 bg-slate-50 text-sky-600 hover:bg-sky-50 hover:border-sky-200 transition-colors text-sm font-medium">
             <fa-icon [icon]="faList" class="text-sm"></fa-icon>
             <span>Manage</span>

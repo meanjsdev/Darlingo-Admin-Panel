@@ -2,9 +2,9 @@
   <!-- Header with title and add button -->
   <div class="header">
     <h1>Users</h1>
-    <button type="button" class="add-user-btn" (click)="addUser()">
+    <!-- <button type="button" class="add-user-btn" (click)="addUser()">
       <i class="fas fa-plus"></i> Add User
-    </button>
+    </button> -->
   </div>
 
   <!-- Filters -->
@@ -69,6 +69,8 @@
           <th style="width: 250px;">Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Nationality</th>
+          <th>Native Language</th>
           <th>Created At</th>
           <th>Status</th>
           <th style="width: 180px;">Actions</th>
@@ -100,12 +102,13 @@
               </div>
               <div class="user-details">
                 <div class="user-name">{{ user.name || 'N/A' }}</div>
-                <div class="user-email">{{ user.email || '' }}</div>
               </div>
             </div>
           </td>
           <td>{{ user.email || 'N/A' }}</td>
           <td>{{ user.phone || 'N/A' }}</td>
+          <td>{{ user.natioanlity || 'N/A' }}</td>
+          <td>{{ user.nativeLanguage || 'N/A' }}</td>
           <td>{{ user.createdAt | date:'mediumDate' }}</td>
           <td>
             <div class="status-toggle-container">

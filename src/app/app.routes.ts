@@ -59,4 +59,26 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/subscription-form/subscription-form').then(m => m.SubscriptionForm),
     canActivate: [AuthGuard],
   },
+  {
+    path: 'countries-languages',
+    loadComponent: () => import('./pages/countries-languages/countries-languages').then(m => m.CountriesLanguages),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'countries-languages/:type',
+    loadComponent: () => import('./pages/countries-languages-list/countries-languages-list.component').then(m => m.CountriesLanguagesListComponent),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'countries-languages/:type/add',
+    loadComponent: () => import('./pages/countries-languages-edit/countries-languages-edit.component').then(m => m.CountriesLanguagesEditComponent),
+    data: { isEdit: false },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'countries-languages/:type/edit/:id',
+    loadComponent: () => import('./pages/countries-languages-edit/countries-languages-edit.component').then(m => m.CountriesLanguagesEditComponent),
+    data: { isEdit: true },
+    canActivate: [AuthGuard],
+  },
 ];
