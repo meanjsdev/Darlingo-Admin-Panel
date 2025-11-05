@@ -63,7 +63,6 @@ export class UserDetailsComponent implements OnInit {
 
     this.userService.getUserById(userId).subscribe({
       next: (response: any) => {
-        console.log('User response:', response);
         if (response?.success && response?.data?.user) {
           this.user.set(response.data.user);
         } else {
@@ -148,6 +147,11 @@ export class UserDetailsComponent implements OnInit {
   getUserLookingFor(): string {
     const userData = this.user() as any;
     return userData?.lookingFor || 'N/A';
+  }
+
+  getPreferredLanguage(): string {
+    const userData = this.user() as any;
+    return userData?.preferredLanguage || 'N/A';
   }
 
   getUserInterests(): string {

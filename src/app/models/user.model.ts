@@ -5,8 +5,9 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  natioanlity?:string;
+  nationality?:string;
   nativeLanguage?:string;
+  preferredLanguage?:string;
   dialCode?: string;
   role: string;
   accountStatus?: UserStatus;

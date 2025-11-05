@@ -41,10 +41,8 @@ export default class SubscriptionList implements OnInit {
 
   loadSubscriptions() {
     this.loading = true;
-    console.log('Loading subscriptions...');
     this.subscriptionService.getSubscriptions().subscribe({
       next: (response) => {
-        console.log('API Response:', response);
         if (response.success && response.data) {
           // Map the API response to match our subscription model
           this.subscriptions = response.data.map(sub => ({
@@ -58,7 +56,6 @@ export default class SubscriptionList implements OnInit {
             createdAt: sub.createdAt || new Date().toISOString(),
             updatedAt: sub.updatedAt || new Date().toISOString()
           }));
-          console.log('Mapped subscriptions:', this.subscriptions);
         } else {
           console.error('Failed to load subscriptions:', response);
           this.error = 'Failed to load subscriptions. Please try again.';

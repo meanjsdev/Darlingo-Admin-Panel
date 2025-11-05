@@ -71,6 +71,7 @@
           <th>Phone</th>
           <th>Nationality</th>
           <th>Native Language</th>
+          <th>Preferred Language</th>
           <th>Created At</th>
           <th>Status</th>
           <th style="width: 180px;">Actions</th>
@@ -98,7 +99,7 @@
           <td>
             <div class="user-info">
               <div class="user-avatar">
-                <img [src]="user.profilePicture || 'assets/images/avatar-default.svg'" alt="User Avatar" onerror="this.src='assets/images/avatar-default.svg'">
+                <img [src]="user.profilePicture || 'assets/images/avatar-default.svg'" alt="User Avatar" width="40" height="40" onerror="this.src='assets/images/avatar-default.svg'">
               </div>
               <div class="user-details">
                 <div class="user-name">{{ user.name || 'N/A' }}</div>
@@ -107,8 +108,9 @@
           </td>
           <td>{{ user.email || 'N/A' }}</td>
           <td>{{ user.phone || 'N/A' }}</td>
-          <td>{{ user.natioanlity || 'N/A' }}</td>
+          <td>{{ user.nationality || 'N/A' }}</td>
           <td>{{ user.nativeLanguage || 'N/A' }}</td>
+          <td>{{ user.preferredLanguage || 'N/A' }}</td>
           <td>{{ user.createdAt | date:'mediumDate' }}</td>
           <td>
             <div class="status-toggle-container">
