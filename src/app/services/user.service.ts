@@ -90,8 +90,9 @@ export class UserService {
   /**
    * Update user activation status
    */
-  updateUserStatus(id: string, isActive: boolean): Observable<User> {
-    return this.api.patch<User>(`/admin/users/${id}/status`, { isActive });
+  updateUserStatus(id: string, status: string): Observable<User> {
+    let data = { userId: id, accountStatus : status };
+    return this.api.post<User>(`/admin/update-user-account-status`, data);
   }
 
   /**

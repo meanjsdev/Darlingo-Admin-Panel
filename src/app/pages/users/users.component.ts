@@ -228,8 +228,8 @@ export class UsersComponent {
     if (!user?._id) return;
     
     const newStatus: UserStatus = user.accountStatus === 'active' ? 'inactive' : 'active';
-    
-    this.userService.updateUserStatus(user._id, newStatus === 'active')
+    const statusToSend = newStatus === 'active' ? 'ACTIVE' : 'BLOCKED';
+    this.userService.updateUserStatus(user._id, statusToSend)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

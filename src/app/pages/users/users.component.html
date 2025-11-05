@@ -74,8 +74,8 @@
           <th>Native Language</th>
           <th>Preferred Language</th>
           <th>Created At</th>
-          <th>Status</th>
-          <th style="width: 180px;">Actions</th>
+          <th style="width: 200px;">Status</th>
+          <th style="width: 170px;">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -123,7 +123,7 @@
                 <input type="checkbox" 
                        [checked]="user.accountStatus === 'active'" 
                        (change)="toggleUserStatus(user, $event)">
-                <span class="slider round"></span>
+                <span class="slider"></span>
               </label>
             </div>
           </td>
