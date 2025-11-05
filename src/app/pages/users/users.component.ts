@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { takeUntil, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 // Models and Services
 import { User, UserStatus } from '../../models/user.model';
@@ -53,8 +53,10 @@ export class UsersComponent {
   
   // Filters
   searchTerm = signal('');
+  searchTermValue = ''; // For ngModel binding
   statusFilter = signal<FilterOption | null>({ label: 'All Status', value: null });
   roleFilter = signal<FilterOption | null>({ label: 'All Roles', value: null });
+  private searchSubject = new Subject<string>();
   
   // Filter options
   statusOptions = signal<FilterOption[]>([
@@ -72,7 +74,17 @@ export class UsersComponent {
   constructor() {
     // Load users when component initializes
     this.loadUsers();
-    
+
+    // Setup debounced search
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(searchValue => {
+      this.searchTerm.set(searchValue);
+      this.applyFilters();
+    });
+
     // Auto-hide toast after 5 seconds
     effect(() => {
       if (this.toastMessage()) {
@@ -127,6 +139,7 @@ export class UsersComponent {
 
   resetFilters(): void {
     this.searchTerm.set('');
+    this.searchTermValue = '';
     this.statusFilter.set(null);
     this.roleFilter.set(null);
     this.currentPage.set(1);
@@ -289,5 +302,11 @@ export class UsersComponent {
 
   clearToast(): void {
     this.toastMessage.set(null);
+  }
+
+  // Search method
+  onSearchChange(value: string): void {
+    this.searchTermValue = value;
+    this.searchSubject.next(value);
   }
 }
