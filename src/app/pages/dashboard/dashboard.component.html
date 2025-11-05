@@ -6,8 +6,15 @@
   </div>
 
   <!-- Stats Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div *ngFor="let stat of stats" class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="col-span-full flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <span class="ml-3 text-gray-600">Loading dashboard data...</span>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div *ngFor="let stat of stats()" class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-500">{{ stat.title }}</p>
@@ -23,7 +30,7 @@
   <!-- Charts Row -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Plan Revenue Chart -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+    <!-- <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <h3 class="font-semibold text-gray-800 mb-2 sm:mb-0">Plan Revenue</h3>
         <div class="flex items-center">
@@ -40,10 +47,10 @@
                 [options]="chartOptions">
         </canvas>
       </div>
-    </div>
+    </div> -->
 
     <!-- Plan Subscription Chart -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+    <!-- <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <h3 class="font-semibold text-gray-800 mb-2 sm:mb-0">Plan Subscription</h3>
         <div class="flex items-center">
@@ -60,6 +67,6 @@
                 [options]="chartOptions">
         </canvas>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>

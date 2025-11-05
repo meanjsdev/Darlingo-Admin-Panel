@@ -32,10 +32,12 @@ export interface UserQueryParams extends Omit<ModelUserQueryParams, 'status'> {
 }
 
 export interface UserStats {
-  total: number;
-  active: number;
-  inactive: number;
-  newThisWeek: number;
+  stats: {
+    totalUsers: number;
+    totalActiveUsers: number;
+    totalInactiveUsers: number;
+    newThisWeek: number;
+  };
 }
 
 export interface ApiResponse<T> {
@@ -117,6 +119,6 @@ export class UserService {
    * Get user statistics
    */
   getUserStats(): Observable<ApiResponse<UserStats>> {
-    return this.api.get<ApiResponse<UserStats>>('/admin/users/stats');
+    return this.api.get<ApiResponse<UserStats>>('/admin/users-stats');
   }
 }
