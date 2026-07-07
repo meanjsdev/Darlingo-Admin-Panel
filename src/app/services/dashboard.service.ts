@@ -27,27 +27,23 @@ export class DashboardService {
   getDashboardStats(): Observable<DashboardStats> {
     return forkJoin({
       userStats: this.userService.getUserStats(),
-      subscriptions: this.subscriptionService.getSubscriptions(),
+      subscriptionStats: this.subscriptionService.getUserSubscriptionStats(),
       countries: this.countriesLanguagesService.getCountries(),
       languages: this.countriesLanguagesService.getLanguages()
     }).pipe(
-      map(({ userStats, subscriptions, countries, languages }) => {
+      map(({ userStats, subscriptionStats, countries, languages }) => {
         const users = userStats.data.stats;
-        const subs = subscriptions.data || [];
-        
-        // Calculate revenue from active subscriptions
-        const totalRevenue = subs
-          .filter(sub => sub.isActive)
-          .reduce((sum, sub) => sum + (sub.price || 0), 0);
-
-        const activeSubscriptions = subs.filter(sub => sub.isActive).length;
+        // Real purchase data from the UserSubscription collection:
+        // revenue from subscriptions bought in the current month and
+        // the count of users holding a currently active subscription
+        const subStats = subscriptionStats.data;
 
         return {
           totalUsers: users.totalUsers || 0,
           activeUsers: users.totalActiveUsers || 0,
           inactiveUsers: users.totalInactiveUsers || 0,
-          totalRevenue,
-          activeSubscriptions,
+          totalRevenue: subStats?.monthlyRevenue || 0,
+          activeSubscriptions: subStats?.activeSubscribers || 0,
           totalCountries: countries.length || 0,
           totalLanguages: languages.length || 0
         };
