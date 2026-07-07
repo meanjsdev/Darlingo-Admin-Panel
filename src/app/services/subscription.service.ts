@@ -11,6 +11,13 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface UserSubscriptionStats {
+  monthlyRevenue: number;
+  monthlyPurchases: number;
+  monthlySubscribers: number;
+  activeSubscribers: number;
+}
+
 /**
  * Service to handle all subscription-related API operations
  */
@@ -29,6 +36,19 @@ export class SubscriptionService {
   getSubscriptions(): Observable<ApiResponse<SubscriptionModel[]>> {
     return this.http
       .get<ApiResponse<SubscriptionModel[]>>(this.apiUrl)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Fetches user subscription stats (real purchases) for the dashboard:
+   * monthly revenue, monthly subscribers and currently active subscribers
+   * @returns Observable with user subscription stats
+   */
+  getUserSubscriptionStats(): Observable<ApiResponse<UserSubscriptionStats>> {
+    return this.http
+      .get<ApiResponse<UserSubscriptionStats>>(
+        `${environment.apiUrl}/admin/user-subscriptions/stats`
+      )
       .pipe(catchError(this.handleError));
   }
 
